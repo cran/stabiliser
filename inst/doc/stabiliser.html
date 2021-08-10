@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>stabiliser</title>
+
+<script src="data:application/javascript;base64,Ly8gUGFuZG9jIDIuOSBhZGRzIGF0dHJpYnV0ZXMgb24gYm90aCBoZWFkZXIgYW5kIGRpdi4gV2UgcmVtb3ZlIHRoZSBmb3JtZXIgKHRvCi8vIGJlIGNvbXBhdGlibGUgd2l0aCB0aGUgYmVoYXZpb3Igb2YgUGFuZG9jIDwgMi44KS4KZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignRE9NQ29udGVudExvYWRlZCcsIGZ1bmN0aW9uKGUpIHsKICB2YXIgaHMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yQWxsKCJkaXYuc2VjdGlvbltjbGFzcyo9J2xldmVsJ10gPiA6Zmlyc3QtY2hpbGQiKTsKICB2YXIgaSwgaCwgYTsKICBmb3IgKGkgPSAwOyBpIDwgaHMubGVuZ3RoOyBpKyspIHsKICAgIGggPSBoc1tpXTsKICAgIGlmICghL15oWzEtNl0kL2kudGVzdChoLnRhZ05hbWUpKSBjb250aW51ZTsgIC8vIGl0IHNob3VsZCBiZSBhIGhlYWRlciBoMS1oNgogICAgYSA9IGguYXR0cmlidXRlczsKICAgIHdoaWxlIChhLmxlbmd0aCA+IDApIGgucmVtb3ZlQXR0cmlidXRlKGFbMF0ubmFtZSk7CiAgfQp9KTsK"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<link rel="stylesheet" href="data:text/css,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" type="text/css" />
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">stabiliser</h1>
+
+
+
+<p>The goal of the stabiliser package is to provide a flexible method of applying stability selection (Meinshausen and Buhlmann, 2010) with various model types, and the framework for triangulating the results for multiple models (Lima et al., 2021).</p>
+<ul>
+<li><code>stabilise()</code> performs stability selection on a range of models to identify causal models.</li>
+<li><code>triangulate()</code> identifies which variables are most likely to be causal across all models.</li>
+<li><code>stab_plot()</code> allows visualisation of either <code>stabilise()</code> or <code>triangulate()</code> outputs.</li>
+</ul>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>You can install this package from github using the devtools package as follows:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">&quot;roberthyde/stabiliser&quot;</span>)</span></code></pre></div>
+</div>
+<div id="usage" class="section level2">
+<h2>Usage</h2>
+<p>The stabiliser_example dataset is a simulated example with the following properties:</p>
+<ul>
+<li>1 simulated outcome variable: <code>y</code></li>
+<li>4 variables simulated to be associated with <code>y</code>: <code>causal1</code>, <code>causal2</code>…</li>
+<li>95 variables simulated to have no association with <code>y</code>: <code>junk1</code>, <code>junk2</code>…</li>
+</ul>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stabiliser)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;stabiliser_example&quot;</span>)</span></code></pre></div>
+<div id="stabilise" class="section level3">
+<h3><code>stabilise()</code></h3>
+<p>To attempt to identify which variables are truly “causal” in this dataset using a selection stability approach, use the <code>stabilise()</code> function as follows:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8141</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>stable_enet <span class="ot">&lt;-</span> <span class="fu">stabilise</span>(<span class="at">data =</span> stabiliser_example,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">outcome =</span> <span class="st">&quot;y&quot;</span>)</span></code></pre></div>
+<p>Access the stability (percentage of 100 bootstrap resamples where a given variable was selected by a given model) results for elastic net as follows:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>stable_enet<span class="sc">$</span>enet<span class="sc">$</span>stability</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 100 x 7</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    variable mean_coefficient ci_lower ci_upper bootstrap_p stability stable</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;               &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt; </span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 causal1              2.82   0.185      6.10           0      85   *     </span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 causal2              2.17   0.0609     5.31           0      83.5 *     </span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 causal3              2.82   0.249      6.33           0      71   &lt;NA&gt;  </span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 junk86               1.51   0.139      4.16           0      69   &lt;NA&gt;  </span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 junk14               2.71   0.174      6.64           0      65   &lt;NA&gt;  </span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 junk13               2.14   0.106      5.23           0      63.5 &lt;NA&gt;  </span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 junk45               2.43   0.127      6.89           0      61.5 &lt;NA&gt;  </span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 junk88               2.23   0.142      4.78           0      61   &lt;NA&gt;  </span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 junk90               1.74   0.0429     5.11           0      50.5 &lt;NA&gt;  </span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 junk26               1.51   0.0417     4.04           0      45.5 &lt;NA&gt;  </span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ... with 90 more rows</span></span></code></pre></div>
+<p>This ranks the variables by stability, and displays the mean coefficients, 95% confidence interval and bootstrap p-value. It also displays whether the variable is deemed “stable”, in this case 2 out of the 4 truly causal variables are identified as “stable”, with no false positives.</p>
+<p>By default, this implements an elastic net algorithm over 100 bootstrap resamples of the dataset. Stability of each variable is then calculated as the proportion of bootstrap repeats where that variable is selected in the model.</p>
+<p><code>stabilise()</code> also permutes the outcome several times (5 by default) and performs the same process on each permuted dataset (20 bootstrap resamples for each by default).</p>
+<p>This allows a permutation threshold to be calculated. Variables with a non-permuted stability % above this threshold are deemed “stable” as they were selected in a higher proportion of bootstrap resamples than in the permuted datasets, where we know there is no association between variables and the outcome.</p>
+<p>The permutation threshold is available as follows:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>stable_enet<span class="sc">$</span>enet<span class="sc">$</span>perm_thresh</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 78.5</span></span></code></pre></div>
+</div>
+<div id="triangulate" class="section level3">
+<h3><code>triangulate()</code></h3>
+<p>Our confidence that a given variable is truly associated with a given outcome might be increased if it is identified in multiple model types.</p>
+<p>Specify multiple model types (elastic net, mbic and mcp) for comparison using the <code>stabilise()</code> function as follows:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">8141</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>stable_combi <span class="ot">&lt;-</span> <span class="fu">stabilise</span>(<span class="at">data =</span> stabiliser_example,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">outcome =</span> <span class="st">&quot;y&quot;</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">models =</span> <span class="fu">c</span>(<span class="st">&quot;enet&quot;</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&quot;mbic&quot;</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&quot;mcp&quot;</span>))</span></code></pre></div>
+<p>The stability of variables is available for all model types as before.</p>
+<p>The stability results from these three models stored within <code>stable_combi</code> can be combined using <code>triangulate</code> as follows:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>triangulated <span class="ot">&lt;-</span> <span class="fu">triangulate</span>(stable_combi)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>triangulated</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $combi</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $combi$stability</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # A tibble: 100 x 4</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    variable stability bootstrap_p stable</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt; </span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  1 causal1       58.5     0       *     </span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  2 causal2       48.7     0       *     </span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  3 causal3       41.8     0       &lt;NA&gt;  </span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  4 junk88        40.7     0.00444 &lt;NA&gt;  </span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5 junk14        35       0       &lt;NA&gt;  </span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  6 junk13        34.7     0       &lt;NA&gt;  </span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7 junk86        33.2     0       &lt;NA&gt;  </span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  8 junk45        26.5     0       &lt;NA&gt;  </span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  9 junk90        24.3     0.0101  &lt;NA&gt;  </span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 10 junk26        20       0.0128  &lt;NA&gt;  </span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; # ... with 90 more rows</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $combi$perm_thresh</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 45.33333</span></span></code></pre></div>
+<p>This shows variables consistently being identified as being stable across multiple model types, and consequently increasing our confidence that they are truly associated with the outcome.</p>
+<p>Triangulating the results for stability selection across multiple model types generally provides better performance at identifying truly causal variables than single model approaches (Lima et al., 2021). As shown in this example, the triangulated approach identifies 3 out of the 4 truly causal variables as being “stable”, and being highly likely to be associated with the outcome <code>y</code>, in contrast to the 2 variables identified when using elastic net alone.</p>
+</div>
+<div id="stab_plot" class="section level3">
+<h3><code>stab_plot()</code></h3>
+<p>Both <code>stabilise()</code> and <code>triangulate()</code> outputs can be plotted using <code>stab_plot()</code> as follows, with causal and junk variables highlighted for this example:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stab_plot</span>(<span class="at">stabiliser_object =</span> triangulated)</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<p>Lima, E., Hyde, R., Green, M., 2021. Model selection for inferential models with high dimensional data: synthesis and graphical representation of multiple techniques. Sci. Rep. 11, 412. <a href="https://doi.org/10.1038/s41598-020-79317-8" class="uri">https://doi.org/10.1038/s41598-020-79317-8</a></p>
+<p>Meinshausen, N., Buhlmann, P., 2010. Stability selection. J. R. Stat. Soc. Ser. B (Statistical Methodol. 72, 417–473. <a href="https://doi.org/10.1111/j.1467-9868.2010.00740.x" class="uri">https://doi.org/10.1111/j.1467-9868.2010.00740.x</a></p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
