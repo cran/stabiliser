@@ -8,13 +8,12 @@
 #' @param outcome the outcome to be permuted as a string (i.e. "y")
 #' @param permutations the number of times to be permuted per repeat
 #' @param perm_boot_reps the number of times to repeat each set of permutations
-#'
+#' @keywords internal
 #' @import dplyr
 #' @importFrom purrr map
 #' @importFrom tidyr unnest
-#' @importFrom rsample permutations
 #' @importFrom utils globalVariables
-#'
+#' @importFrom rsample permutations
 #'
 utils::globalVariables(c("stab_df", "perm_thresh", "mean_thresh", "perm_coefs", "perm_stabs", "splits", "permutation"))
 
@@ -23,10 +22,10 @@ perm_sample <- function(data, outcome, permutations, perm_boot_reps) {
     map_df(.x = .$splits, .f = ~ as.data.frame(.) %>% boot_sample(., perm_boot_reps), .id = "permutation")
 }
 
-perm_model <- function(perm_data, data, outcome, permutations, perm_boot_reps, selected_model) {
+perm_model <- function(perm_data, data, outcome, perm_boot_reps, selected_model, type) {
   perm_data %>%
     mutate(perm_coefs = map(.x = .$splits, .f = ~ as.data.frame(.) %>%
-      selected_model(., outcome = outcome), .id = "bootstrap")) %>%
+      selected_model(., outcome = outcome, type = type), .id = "bootstrap")) %>%
     select(-splits) %>%
     unnest(perm_coefs) %>%
     select(-id) %>%

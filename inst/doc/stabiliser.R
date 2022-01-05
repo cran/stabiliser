@@ -5,6 +5,9 @@ knitr::opts_chunk$set(
 )
 
 ## ----eval=FALSE---------------------------------------------------------------
+#  install.packages("stabiliser")
+
+## ----eval=FALSE---------------------------------------------------------------
 #  devtools::install_github("roberthyde/stabiliser")
 
 ## ----warning=FALSE------------------------------------------------------------

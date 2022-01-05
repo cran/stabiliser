@@ -8,7 +8,7 @@
 #' @param outcome the outcome as a string (i.e. "y")
 #' @param boot_reps the number of bootstrap samples
 #' @param model the model to be used (i.e. model_mbic)
-#'
+#' @keywords internal
 #' @import rsample
 #' @import dplyr
 #' @importFrom purrr map_df
@@ -23,9 +23,9 @@ boot_sample <- function(data, boot_reps) {
   rsample::bootstraps(data, boot_reps)
 }
 
-boot_model <- function(data, outcome, boot_reps, selected_model) {
+boot_model <- function(data, outcome, selected_model, type) {
   data %>%
-    map_df(.x = .$splits, .f = ~ as.data.frame(.) %>% selected_model(., outcome = outcome), .id = "bootstrap")
+    map_df(.x = .$splits, .f = ~ as.data.frame(.) %>% selected_model(., outcome = outcome, type = type), .id = "bootstrap")
 }
 
 boot_summarise <- function(booted_obj, data, boot_reps) {
