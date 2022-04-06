@@ -1,6 +1,6 @@
 Package: stabiliser
 Title: Stabilising Variable Selection
-Version: 0.1.2
+Version: 1.0.1
 Authors@R: 
     c(
     person(given = "Robert",
@@ -16,7 +16,7 @@ Authors@R:
            family = "Lima",
            role = c("aut"),
            email = "eliana.lima1@nottingham.ac.uk"))       
-Description: A stable approach to variable selection through stability selection and the use of an objective threshold based on a model from permuted data. Lima et al (2021) <doi:10.1038/s41598-020-79317-8>, Meinshausen and Buhlmann (2010) <doi:10.1111/j.1467-9868.2010.00740.x>.
+Description: A stable approach to variable selection through stability selection and the use of a permutation-based objective stability threshold. Lima et al (2021) <doi:10.1038/s41598-020-79317-8>, Meinshausen and Buhlmann (2010) <doi:10.1111/j.1467-9868.2010.00740.x>.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -28,10 +28,10 @@ Imports: glmnet, dplyr, bigstep, rsample, tibble, purrr, tidyr,
         stringr, ggplot2, broom, caret, ncvreg, knitr
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2022-02-14 11:38:32 UTC; Bobby
+Packaged: 2022-04-05 14:11:25 UTC; Bobby
 Author: Robert Hyde [aut, cre] (<https://orcid.org/0000-0002-8705-9405>),
   Martin Green [aut],
   Eliana Lima [aut]
 Maintainer: Robert Hyde <robert.hyde4@nottingham.ac.uk>
 Repository: CRAN
-Date/Publication: 2022-02-14 12:20:03 UTC
+Date/Publication: 2022-04-06 10:40:02 UTC
