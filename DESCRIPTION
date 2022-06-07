@@ -1,6 +1,6 @@
 Package: stabiliser
 Title: Stabilising Variable Selection
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: 
     c(
     person(given = "Robert",
@@ -25,13 +25,14 @@ Config/testthat/edition: 3
 Depends: R (>= 3.0.0)
 Suggests: rmarkdown, testthat (>= 3.0.0), markdown
 Imports: glmnet, dplyr, bigstep, rsample, tibble, purrr, tidyr,
-        stringr, ggplot2, broom, caret, ncvreg, knitr
+        stringr, ggplot2, broom, caret, ncvreg, knitr, Hmisc, expss,
+        lme4, matrixStats, recipes, lmerTest
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2022-04-05 14:11:25 UTC; Bobby
+Packaged: 2022-06-07 09:28:33 UTC; Bobby
 Author: Robert Hyde [aut, cre] (<https://orcid.org/0000-0002-8705-9405>),
   Martin Green [aut],
   Eliana Lima [aut]
 Maintainer: Robert Hyde <robert.hyde4@nottingham.ac.uk>
 Repository: CRAN
-Date/Publication: 2022-04-06 10:40:02 UTC
+Date/Publication: 2022-06-07 12:00:04 UTC
