@@ -201,50 +201,37 @@ hr {
 </head>
 
 <body>
-<p>The goal of the stabiliser package is to provide a flexible method of applying stability selection (Meinshausen and Buhlmann, 2010) with various model types, and the framework for triangulating the results for multiple models (Lima et al., 2021). </p>
-
+<p>The goal of the stabiliser package is to provide a flexible method of applying stability selection (Meinshausen and Buhlmann, 2010) with various model types, and the framework for triangulating the results for multiple models (Lima et al., 2021).</p>
 <ul>
 <li><code>stabilise()</code> performs stability selection on a range of models to identify causal models.</li>
-<li><code>triangulate()</code> identifies which variables are most likely to be causal across all models. </li>
-<li><code>stab_plot()</code> allows visualisation of either <code>stabilise()</code> or <code>triangulate()</code> outputs. </li>
+<li><code>triangulate()</code> identifies which variables are most likely to be causal across all models.</li>
+<li><code>stab_plot()</code> allows visualisation of either <code>stabilise()</code> or <code>triangulate()</code> outputs.</li>
 </ul>
-
 <h2>Installation</h2>
-
 <p>You can install this package from github using the devtools package as follows:</p>
-
-<pre><code class="r">install.packages(&quot;stabiliser&quot;)
+<pre><code class="language-r">install.packages(&quot;stabiliser&quot;)
 </code></pre>
-
 <p>Or to get the most recent development version:</p>
-
-<pre><code class="r">devtools::install_github(&quot;roberthyde/stabiliser&quot;)
+<pre><code class="language-r">devtools::install_github(&quot;roberthyde/stabiliser&quot;)
 </code></pre>
-
 <h2>Usage</h2>
-
 <p>The stabiliser_example dataset is a simulated example with the following properties:</p>
-
 <ul>
 <li>1 simulated outcome variable: <code>y</code></li>
-<li>4 variables simulated to be associated with <code>y</code>: <code>causal1</code>, <code>causal2</code>&hellip; </li>
-<li>95 variables simulated to have no association with <code>y</code>: <code>junk1</code>, <code>junk2</code>&hellip;</li>
+<li>4 variables simulated to be associated with <code>y</code>: <code>causal1</code>, <code>causal2</code>…</li>
+<li>95 variables simulated to have no association with <code>y</code>: <code>junk1</code>, <code>junk2</code>…</li>
 </ul>
-
-<pre><code class="r">library(stabiliser)
-#&gt; Registered S3 methods overwritten by &#39;expss&#39;:
+<pre><code class="language-r">library(stabiliser)
+#&gt; Registered S3 methods overwritten by 'expss':
 #&gt;   method                 from 
 #&gt;   [.labelled             Hmisc
 #&gt;   as.data.frame.labelled base 
 #&gt;   print.labelled         Hmisc
 data(&quot;stabiliser_example&quot;)
 </code></pre>
-
 <h3><code>stabilise()</code></h3>
-
-<p>To attempt to identify which variables are truly &ldquo;causal&rdquo; in this dataset using a selection stability approach, use the <code>stabilise()</code> function as follows:</p>
-
-<pre><code class="r">set.seed(8141)
+<p>To attempt to identify which variables are truly “causal” in this dataset using a selection stability approach, use the <code>stabilise()</code> function as follows:</p>
+<pre><code class="language-r">set.seed(8141)
 stable_enet &lt;- stabilise(data = stabiliser_example,
                          outcome = &quot;y&quot;)
 #&gt; Recipe
@@ -261,11 +248,9 @@ stable_enet &lt;- stabilise(data = stabiliser_example,
 #&gt; Dummy variables from all_nominal_predictors()
 #&gt; K-nearest neighbor imputation for all_predictors()
 </code></pre>
-
 <p>Access the stability (percentage of 100 bootstrap resamples where a given variable was selected by a given model) results for elastic net as follows:</p>
-
-<pre><code class="r">stable_enet$enet$stability
-#&gt; # A tibble: 99 x 7
+<pre><code class="language-r">stable_enet$enet$stability
+#&gt; # A tibble: 99 × 7
 #&gt;    variable mean_coefficient ci_lower ci_upper bootstrap_p stability stable
 #&gt;    &lt;chr&gt;               &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt; 
 #&gt;  1 causal1              2.79   0.223      5.92           0      84   *     
@@ -278,30 +263,20 @@ stable_enet &lt;- stabilise(data = stabiliser_example,
 #&gt;  8 junk45               2.02   0.110      5.48           0      59.5 &lt;NA&gt;  
 #&gt;  9 junk90               1.74   0.0673     5.60           0      47.5 &lt;NA&gt;  
 #&gt; 10 junk26               1.67   0.0564     5.22           0      43   &lt;NA&gt;  
-#&gt; # ... with 89 more rows
+#&gt; # … with 89 more rows
 </code></pre>
-
-<p>This ranks the variables by stability, and displays the mean coefficients, 95% confidence interval and bootstrap p-value. It also displays whether the variable is deemed &ldquo;stable&rdquo;, in this case 2 out of the 4 truly causal variables are identified as &ldquo;stable&rdquo;, with no false positives. </p>
-
-<p>By default, this implements an elastic net algorithm over 100 bootstrap resamples of the dataset. Stability of each variable is then calculated as the proportion of bootstrap repeats where that variable is selected in the model. </p>
-
+<p>This ranks the variables by stability, and displays the mean coefficients, 95% confidence interval and bootstrap p-value. It also displays whether the variable is deemed “stable”, in this case 2 out of the 4 truly causal variables are identified as “stable”, with no false positives.</p>
+<p>By default, this implements an elastic net algorithm over 100 bootstrap resamples of the dataset. Stability of each variable is then calculated as the proportion of bootstrap repeats where that variable is selected in the model.</p>
 <p><code>stabilise()</code> also permutes the outcome several times (5 by default) and performs the same process on each permuted dataset (20 bootstrap resamples for each by default).</p>
-
-<p>This allows a permutation threshold to be calculated. Variables with a non-permuted stability % above this threshold are deemed &ldquo;stable&rdquo; as they were selected in a higher proportion of bootstrap resamples than in the permuted datasets, where we know there is no association between variables and the outcome.  </p>
-
-<p>The permutation threshold is available as follows: </p>
-
-<pre><code class="r">stable_enet$enet$perm_thresh
+<p>This allows a permutation threshold to be calculated. Variables with a non-permuted stability % above this threshold are deemed “stable” as they were selected in a higher proportion of bootstrap resamples than in the permuted datasets, where we know there is no association between variables and the outcome.</p>
+<p>The permutation threshold is available as follows:</p>
+<pre><code class="language-r">stable_enet$enet$perm_thresh
 #&gt; [1] 81
 </code></pre>
-
 <h3><code>triangulate()</code></h3>
-
-<p>Our confidence that a given variable is truly associated with a given outcome might be increased if it is identified in multiple model types. </p>
-
+<p>Our confidence that a given variable is truly associated with a given outcome might be increased if it is identified in multiple model types.</p>
 <p>Specify multiple model types (elastic net, mbic and mcp) for comparison using the <code>stabilise()</code> function as follows:</p>
-
-<pre><code class="r">set.seed(8141)
+<pre><code class="language-r">set.seed(8141)
 stable_combi &lt;- stabilise(data = stabiliser_example,
                          outcome = &quot;y&quot;,
                          models = c(&quot;enet&quot;,
@@ -321,51 +296,45 @@ stable_combi &lt;- stabilise(data = stabiliser_example,
 #&gt; Dummy variables from all_nominal_predictors()
 #&gt; K-nearest neighbor imputation for all_predictors()
 </code></pre>
-
-<p>The stability of variables is available for all model types as before. </p>
-
+<p>The stability of variables is available for all model types as before.</p>
 <p>The stability results from these three models stored within <code>stable_combi</code> can be combined using <code>triangulate</code> as follows:</p>
-
-<pre><code class="r">triangulated &lt;- triangulate(stable_combi)
+<pre><code class="language-r">triangulated &lt;- triangulate(stable_combi)
 triangulated
 #&gt; $combi
 #&gt; $combi$stability
-#&gt; # A tibble: 99 x 4
-#&gt;    variable stability bootstrap_p stable
-#&gt;    &lt;chr&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;chr&gt; 
-#&gt;  1 causal1       56.3     0       *     
-#&gt;  2 causal2       45.2     0       &lt;NA&gt;  
-#&gt;  3 causal3       42.8     0.00877 &lt;NA&gt;  
-#&gt;  4 junk88        41.5     0       &lt;NA&gt;  
-#&gt;  5 junk14        36       0.00556 &lt;NA&gt;  
-#&gt;  6 junk13        32.2     0       &lt;NA&gt;  
-#&gt;  7 junk86        28.8     0.00741 &lt;NA&gt;  
-#&gt;  8 junk45        24.8     0       &lt;NA&gt;  
-#&gt;  9 junk90        21.2     0       &lt;NA&gt;  
-#&gt; 10 junk65        19.5     0       &lt;NA&gt;  
-#&gt; # ... with 89 more rows
+#&gt; # A tibble: 99 × 7
+#&gt;    variable mean_coefficient ci_lower ci_upper bootstrap_p stability stable
+#&gt;    &lt;chr&gt;               &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt; 
+#&gt;  1 causal1              4.24   0.379    8.75       0            56.3 *     
+#&gt;  2 causal2              4.12   0.344    9.64       0            45.2 &lt;NA&gt;  
+#&gt;  3 causal3              3.36   0.276    8.59       0.00778      42.8 &lt;NA&gt;  
+#&gt;  4 junk88               3.86   0.201    8.14       0            41.5 &lt;NA&gt;  
+#&gt;  5 junk14               3.64   0.221    9.13       0.00463      36   &lt;NA&gt;  
+#&gt;  6 junk13               3.37   0.244    8.59       0            32.2 &lt;NA&gt;  
+#&gt;  7 junk86               1.98   0.0190   7.53       0.00578      28.8 &lt;NA&gt;  
+#&gt;  8 junk45               2.40   0.114    6.89       0            24.8 &lt;NA&gt;  
+#&gt;  9 junk90               2.36   0.0727   8.39       0            21.2 &lt;NA&gt;  
+#&gt; 10 junk65              -1.90  -6.77    -0.0917     0            19.5 &lt;NA&gt;  
+#&gt; # … with 89 more rows
+#&gt; 
+#&gt; $combi$intercept
+#&gt; # A tibble: 1 × 7
+#&gt;   variable    mean_coefficient ci_lower ci_upper bootstrap_p stability stable
+#&gt;   &lt;chr&gt;                  &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt; 
+#&gt; 1 (Intercept)             2.14    -1.56     6.38       0.132       100 *     
 #&gt; 
 #&gt; $combi$perm_thresh
 #&gt; [1] 51
 </code></pre>
-
-<p>This shows variables consistently being identified as being stable across multiple model types, and consequently increasing our confidence that they are truly associated with the outcome. </p>
-
-<p>Triangulating the results for stability selection across multiple model types generally provides better performance at identifying truly causal variables than single model approaches (Lima et al., 2021). As shown in this example, the triangulated approach identifies 3 out of the 4 truly causal variables as being &ldquo;stable&rdquo;, and being highly likely to be associated with the outcome <code>y</code>, in contrast to the 2 variables identified when using elastic net alone.</p>
-
+<p>This shows variables consistently being identified as being stable across multiple model types, and consequently increasing our confidence that they are truly associated with the outcome.</p>
+<p>Triangulating the results for stability selection across multiple model types generally provides better performance at identifying truly causal variables than single model approaches (Lima et al., 2021). As shown in this example, the triangulated approach identifies 3 out of the 4 truly causal variables as being “stable”, and being highly likely to be associated with the outcome <code>y</code>, in contrast to the 2 variables identified when using elastic net alone.</p>
 <h3><code>stab_plot()</code></h3>
-
-<p>Both <code>stabilise()</code> and <code>triangulate()</code> outputs can be plotted using <code>stab_plot()</code> as follows, with causal and junk variables highlighted for this example: </p>
-
-<pre><code class="r">stab_plot(stabiliser_object = triangulated)
+<p>Both <code>stabilise()</code> and <code>triangulate()</code> outputs can be plotted using <code>stab_plot()</code> as follows, with causal and junk variables highlighted for this example:</p>
+<pre><code class="language-r">stab_plot(stabiliser_object = triangulated)
 </code></pre>
-
-<p><img src="data:image/png;base64,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" alt="plot of chunk stab_plot"/></p>
-
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAA6lBMVEUAAAAAADoAAGYAOpAAZmYAZrYAv8Q6AAA6ADo6AGY6Ojo6OmY6OpA6ZrY6kJA6kNtNTU1NTY5NbqtNjshmAABmADpmAGZmOgBmOjpmOpBmZmZmtttmtv9uTY5ubqtuq6tuq+SOTU2OTY6ObquOjk2OyP+QOgCQOjqQOmaQZgCQ2/+rbk2r5P+2ZgC2Zjq225C2/7a2///Ijk3Ijm7Ijo7I///bkDrbtmbb25Db2//b/7bb/9vb///kq27kq47k/8jk///r6+v4dm3/tmb/trb/yI7/25D/29v/5Kv//7b//8j//9v//+T////3J22CAAAACXBIWXMAAAsSAAALEgHS3X78AAATRklEQVR4nO2dCWPbxhWEYTmSk9qtGB9J0zKOElVySltpZddM6kqOKFaqJRr//+8UBw+QBIjdxeK9wWImsXmOB9yP+7BYgEAUU71UpL0AlI4Ivqci+J6K4HsqO/CTZmG6dox4lJ5G8MLxBC9ux4gneHE7RjzBi9sx4gle3I4RT/Didox4ghe3Y8QTvLgdI57gxe0Y8QQvbseIJ3hxO0Y8wYvbMeIJXtyOEU/w4naMeIIXt2PEE7y4HSOe4MXtGPEEL27HiCd4cTtGvFmDX183DKsVwQvHGzX49XXr5AleOJ7gxe0Y8T0t9QcHjexN4zXtvR7cHRyskbf8GhC8R2mC3/gatJ1O8EWJl3qCx5A8+DXykukEX5Qq+NiOPcF7lPTm3AL0/Naq2u9IN/pXCL4gQfAHB5PC/RyVJ/Bm/wzBFyQHfg3O8oGfUk/w1lIC7zSTw1LvUa2CX8dRLPVO4uDOo9oEv1WAJ7FbV3dK9+4neFOVgbedtHFP9+4neGNtMib4noAvs1dxN/g+ELxHoeyPr60EycsE71FdAZ++TvAehQK+rtQTvGepgbcd47HU+5UWeJfRPcF7FMELx/cdvMsMHsF7FMzgzsyueZQuwTvL/wE8svE+/ATvYid4b+oWeJZ6b+oY+O7HI4P//HrwrHi70s7PXt8bK+1mHZngPapsOW6O4rcnhduVSj+7+QGzVU1nuOomeI8qW46Pb1Lmq9tkmXcom0Uv3K6e3+Uq/Sf6oMjRJwH+3Rz4uyX4hcriKw6YLevFLPVd6/EL7Sr1W89agDcTwXuUh3V8hUq+D5MdrxmI4D2qclR/f3xlOaqv18LuOA9D8B6lsh1P8PrSmcBhqVcXZ+6E4wnevt8TvEcpgl+t6Q2/AQTvUTLg52QrwJuO9Qjeo0TAL8hWlHqCV5Am+MLrbab78hO8vUpLvbXc7bu/d63HF/39Aq9sn1ccgi/IG3jkk9CIgK8973CY4I0GaAGV+q1PW3+m8fDAp42ADd57/PbH7SH4vBFMS30Y58Ap+Z73r9Sb72ubWLx51+58R7Va6k39AYE3b4Q5eJO3t3AAD8aaJiTwVnaCx5D8djxSqbcq2ARvpWLbTiqeby99t9/uSCCCt9Fa204qnm8tvcZP8KYKDDxLvakCK/Ua8b0Bj2PHiCf4lSzmf9qId7I7XAqy1+DLGBuv7oHAu1z8tc/gSxkTvIaagLcen5WDjzsIvtel3n6LbFnq639RvfWmzXQHcXBXkDD4UmdlHdi+zkEjEXxBsqV+adzs8htvLD+0g+A9CvJHkxWHdgiCL1tAgt+h3URNm65iJSIHvnQBCL5aNat946Yr/1cI3qPUwVsMFFjqPUq71NtsGnBw51HSg7tNzASvJPG5+m3yUukEX5Q6eLl0gi9Ku9QLphN8UQj744XsGPEEL27HiCd4cTtGfE/Ar6/SIVpeOb4f4DcG8RAtrxxP8PYieI8CKPU2P7ZtJIIvSH9wZ/Xzev/xYnaC3xDBq6hF8KY/cGep11B74Et68qTRhSIJ3qfaAJ/jLQHfaBcNwXuVT/AbJ6PehkzwQYJfAa/Cy1IfNPjq0RpEyyvHBwi+fngO0fLK8SGCB7djxBO8uB0jnuDF7RjxBC9ux4gneHE7RnzHwVteMW7T7iaC9yg38PVzNSuVn+DQRQTvUR7A72Zf/G5AtLxyfLfATzZ1cLC8TcluvV58586Xe6fI0acDfvkFKHmurtyz1K/5u9XjF6o4hKaRvWG6nJ/gLcTj6jf9/QDPw6u3/ARvL4L3KJZ64fiegEeyY8QTvLgdI57gxe0Y8QQvbseIJ3hxO0Y8wYvbMeIJXtyOEU/w4naMeIIXt2PEE7y4HSOe4MXtGPEEL27HiCd4cTtGfMDgq4+/hGh55fhwwR/kcrU3TG/RT/C7RfA7/eGCZ6nf6Q8YPKodI74P4H1fKpLgPcobeJNzXEG0vHJ8aOCNzmoH0fLK8T0Az1Jf5g8NvNEPqSBaXjk+OPD4dox4ghe3Y8QTvLgdIz5Q8NZXk/aa3q6f4KvlcP14j+kt+wm+WgRf6w8TPEt9rT9Q8Mh2jHiCF7djxBO8uB0jnuDF7RjxBC9ux4gneHE7RnzA4Ks36SBaXjk+XPA7JnEgWl45nuDtRfAexVIvHB8weFQ7Rnyo4LmTpsYfKPjdu+cgWl45nuDtRfAexVIvHB8qeGA7RjzBi9sx4gle3I4RT/Didox4ghe3Y8QTvLgdI57gxe0Y8QQvbseIJ3hxO0Y8wYvbMeIJXtyOEd998ObXEi61O4jgPcoZfN3Vw2vsLiJ4jyJ44fjOg2epd/Mjg//8evAsvb3/cfD1+7VXOLhr7EcGf3MUvz1Jbi9P4sujtVeMPzvPXl3lRwb/8U3KPtPNSXYzsVQ6ALD19ESRo08C/Lsl+Pvjq7VXTOMrRn4QXU45vhM9/v6n9VU8S31zPzL4xTr+0/cb3Dm4a+5HBp+N6pMq/3YwGDgO7soF0fLK8cjgq0Xwjf0EL27HiCd4cTtGPMGL2zHiCV7cjhHfB/C8NEmJvwfgeTGiMj/B24vgPYqlXjg+fPAl0/UQLa8cHzz4sh10EC2vHI8H/u55FD282P1ugm/shwM/Ox3G8bSGPEt9Yz8c+Ltvzud/7ZDZZ+eZLXf44cDHZ4dJj9/f/W6jz1594DVEyyvHw4FPV/Gp9nb1eYJv7IcDbySW+sZ+X+Bnp4fpzbgwKrt9clG4XTyqUHE56gp95Wc3/W0FRMsrx3vr8dlAPBuSb0oMvPGvqSBaXjneG/jZq1FOdxxF+/Ht42/3/vHkYnE//fvJxTR9VCGCF473t44f72cj8gRwsjF2++Uoufdbfv/RMKkE2aP4rKQiOCwHS31jvz/wCeJs8/v2UfRglHb95E9+/6vzeHx4++TXdLB+WOFubeYOz44R73FUfzZMO/107/zuxRz8r/n9BfhdFby9mTs4O0a8R/C3j/88ylbQ00WP/zW/vyj1X45KB3/ry+Fx5g7UjhHvEfzsNO2nSaX+4vkwB/8hv283uPM2c4dqx4iHm8BpNnNXOrzjgRglfjjwRqr67KUbdDz0qsyPB35c298J3oMfDnyyGXA2dF7Hs9Sb+vHAf3M+PuSovvV4OPCzV6PpPsG3Hg8HPp4+/M9p5QTfXATf2A8Hvq6zZyL4xv4gwV9fN7I3TG/bHyj46h14Be3+7NfXNeQhWl45Hg58PnPnsB2/2mgjeAM/HHgjlXz24jQNS3293zf4rTa/fRRF5cV7Why6O+6dW8G2OYs1RMsrx3sGv1VlU4R3L0Zl7y0DPzvNd9EY7o8v0rY4izVEyyvHtw1+Tjc7FCe5Px4m6/C988XDldxG9S4nq49BWl45vu1SP87L/P8uknsZ+OSJ2b8XD1cqTODsJ9+NmpF9Sam3EUTLK8e3PbjL6P73PC3hw0WPfzBaPFypOGU73q85FpsTOM39bYNP1++z0+Evo2T7PCGdbaRPDxcPVyqW+jPupGk/vvXNuXxUP42ivxwmnf0Pw3G6kZ49rOjxP/8zP1Zzlwi+sR9vO34aPfxQvhmwEsE39uOBNxHBN/bDgefh1TLxYOAtJ3AcBdHyyvFg4F12yxa25fmjSWM/HPhs91zNzrm1z16YvTOdyINoeeV4OPDWv50jeCc/HHj7wV0GOyfOUm/shwPv9mtZu701EC2vHA8H3nodn4ngbf2+wZe0/y+Fabhp/YkRTLT92a1200G0vHK8Z/BlPc8SvFOPtxNEyyvHi4DP9sdOs70zh/Pzom3K4xkx6js/RMsrx4uU+hz8fvrXnyr2v/ibsjVY3UO0vHK8wOBuAT7v9g9qwDfu8QRv5G8b/Nlw9vN5dgTGnP7dd6VMPa7jWepN/G2Dv30U7cfZERjLbl/623fulhWOR9uOT74ofz2tWh8sRfCN/WDgZ69G6bCfh161Hg8GPh3Onw0rR/UTypciR58O+OUXoFkYRJdTju9Wj1+o5rPXjeshWl45Hg28yekN6z577ZY8RMsrx4OBNxTBN/YHA77ImqW+3h8KeKsd8hAtrxxP8PYieI/yWuod7A3TJf0Evylj9hAtrxwfEHjzag/R8srxBG8vgveodkp9xTcBouWV40MCv6WqGgDR8srxBG8vgveodo7AYamv9IcNHtKOEU/w4naMeIIXt2PEE7y4HSOe4MXtGPEEL27HiCd4cTtGPMGL2zHiCV7cjhHfefAuZ6yHaHnl+K6Dd7pGBUTLK8cTvL0I3qNY6oXjOw/eRRAtrxxP8OJ2jHiCF7djxBO8uB0jnuDF7RjxBC9ux4gneHE7RjzBi9sx4gle3I4RT/Didox4ghe3Y8T3Fbzb9ce9pBN8UcLgnXbqeUon+KIIXji+p+BZ6vsKXtGOEU/w4naMeIIXt2PEE7y4HSOe4MXtGPGhgTcarUO0vHJ8YODNts8hWl45nuDtRfAexVIvHB8a+A7YMeIJXtyOEU/w4naMeIIXt2PEE7y4HSOe4MXtGPG9AV/czoNoeeX4cMGvb9GvzexAtLxyfLDgN+bwCH7D3xfwLPUb/mDB75q8hWh55fhwwcPaMeIJXtyOEY8M/vPrwbP83qeXV2uvEHxjPzL4m6P47Ul65/PrpwTvOR4Z/Mc3KftElz8c5+AnlC9Fjj4J8O/m4D+9/P2YPd5zfBd6/OVgMDhae4XgG/uRwS/X8fE9e7zveGTw2ag+Y07w3uORwVeL4Bv7CV7cjhFP8OJ2jHiCF7djxBO8uB0jnuDF7RjxBC9ux4gneHE7RjzBi9sx4gle3I4RT/Didoz4AMHX/0QeouWV48MDb3BSDIiWV44neHsRvEex1AvHBwge3Y4RT/Didox4ghe3Y8QTvLgdI57gxe0Y8QQvbseIJ3hxO0Y8wYvbMeIJXtyOEU/w4naMeIIXt2PEE7y4HSOe4MXtGPEEL27HiA8BvPXlQiFaXjk+APD2FwiGaHnleIK3F8F7lK9Sz4sRGfpDAF8QLz9m6id4exG8R/G6c8LxoYHvgB0jnuDF7RjxIYDnBI6DPwDw3I538QcOvvwViJZXjg8AfDnd7MmK7wREyyvHhwC+TDlygq/0hw2epb7SHyr4nUN9iJZXjg8KvOnoHqLlleNDAm+8XQfR8srxBG8vgvco76W++gKjIC2vHB8U+ILWe/9GLYBoeeV4grcXwXtUy5tzLPWb/mDB49ox4gle3I4RT/Didox4ghe3Y8QTvLgdI57gxe0Y8QQvbseIJ3hxO0Y8wYvbMeIJXtyOEU/w4naM+G6Bn1C+FDn6dMAvvwDNwiC6nHJ8t3r8QgTf2E/w4naMeIIXt2PEE7y4HSOe4MXtGPEEL27HiCd4cTtGPMGL2zHiCV7cjhFP8OJ2jPjAwJv9eA6i5ZXjwwJv+LNJiJZXjid4exG8R7HUC8cHBr4Ldoz4QMDbneIQouWV48MAb3lyS4iWV44neHsRvEex1AvHBwLeThAtrxxP8OJ2jHiCF7djxBO8uB0jnuDF7RjxBC9ux4gneHE7RjzBi9sx4gle3I4RT/Didox4ghe3Y8QTvLgdI57gxe0Y8QQvbseIJ3hxO0Y8wYvbMeIJXtyOEU/w4naMeIIXt2PEE7y4HSOe4MXtGPEEL27HiCd4cTtGPMGL2zHiCV7cjhFP8OJ2jHiCF7djxHcbvN1P5rbsjiJ4j3ICb/kj2U27qwjeowheOL7T4Fnq3f3dBu8oiJZXjid4cTtGPMGL2zHiCV7cjhFP8OJ2jHiCF7djxBO8uB0jnuDF7RjxBC9ux4gneHE7RjzBi9sx4gle3I4RT/Didox4ghe3Y8Qjg//8evBsfvv0au0Vgm/sRwZ/cxS/PUluL0/S/4si+MZ+ZPAf36Ts4/hff1v0+AnlS5GjTwL8uzn4pNtntyuxxzf2d6LHvyd47/HI4Avr+JuTktepAFQ5qr8/vtoe1VPBCKXyUMIi+J6K4Hsqgu+pCL6nsgC/mMLX0P2Pg6/fay7Ap5dXmvH+ZQF+sXmvoXS3wZHiAnx+/fRK8/P7lwX4xYSekm5OFBfg8ofjK+XP71kW4N+pfvD74yu9Bfj08nfN+DbUlR5//9N7xQW4HAwGR73t8ZrruE/fv9ddgKTg9HYdrzmqfZt2OdXNiuP+juqpkETwPRXB91QE31MRfE9F8D1VQOCnURQN47vvLvKHt08usr9/S/77sHgy0/hwdhrtJ7fJn7u1V3qkcMDffnUe3345ynnHC/D57fLJ7Ik/xtP92avR3TfnyaPpofyiIigg8BncpC8/vBhHSYe+ffxt+nfa45N7D/+eAJ7up2/8ZZSDP8uQz34+V11sLYUDPj6L9s4z/sn/SW++fTScnQ7zUv9b8uRX58nD5G1pR09L/aIKjIe6i62kgMAnTJ/vnWeV/VH0YJSW/vHhEnz2JcjX+jnws+FZUhzSNb7uQispKPBxRvpiund+92ITfFLec8Rz8OkLF2dDgu+8Etxx3q2TVfk06fHrpT6+e/E4W5vnY7pkHX+bgz9jqe+4kiFddJiU+4cfnkdfPB8WBndPPjxPivp4P39fMrjLx3lZqefgLnQlfTy/k2zOFcTNucA1jfYXd4trdU7gUP0SwfdUBN9TEXxPRfA91f8B/VPkvRvPUTEAAAAASUVORK5CYII=" alt="plot of chunk stab_plot" /></p>
 <h2>References</h2>
-
 <p>Lima, E., Hyde, R., Green, M., 2021. Model selection for inferential models with high dimensional data: synthesis and graphical representation of multiple techniques. Sci. Rep. 11, 412. <a href="https://doi.org/10.1038/s41598-020-79317-8">https://doi.org/10.1038/s41598-020-79317-8</a></p>
-
 <p>Meinshausen, N., Buhlmann, P., 2010. Stability selection. J. R. Stat. Soc. Ser. B (Statistical Methodol. 72, 417–473. <a href="https://doi.org/10.1111/j.1467-9868.2010.00740.x">https://doi.org/10.1111/j.1467-9868.2010.00740.x</a></p>
 
 </body>

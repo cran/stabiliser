@@ -1,6 +1,6 @@
 Package: stabiliser
 Title: Stabilising Variable Selection
-Version: 1.0.2
+Version: 1.0.6
 Authors@R: 
     c(
     person(given = "Robert",
@@ -29,10 +29,10 @@ Imports: glmnet, dplyr, bigstep, rsample, tibble, purrr, tidyr,
         lme4, matrixStats, recipes, lmerTest
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2022-06-07 09:28:33 UTC; Bobby
+Packaged: 2023-05-17 09:39:37 UTC; svzrh2
 Author: Robert Hyde [aut, cre] (<https://orcid.org/0000-0002-8705-9405>),
   Martin Green [aut],
   Eliana Lima [aut]
 Maintainer: Robert Hyde <robert.hyde4@nottingham.ac.uk>
 Repository: CRAN
-Date/Publication: 2022-06-07 12:00:04 UTC
+Date/Publication: 2023-05-17 11:00:05 UTC

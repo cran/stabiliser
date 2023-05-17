@@ -24,13 +24,19 @@ perm_stab <- function(data, boot_data, perm_data, outcome, boot_reps, permutatio
     message("Done")
 
     list(
-      "stability" = stability,
+      "stability" = stability %>%
+        filter(variable != "(Intercept)"),
+      "intercept" = stability %>%
+        filter(variable == "(Intercept)"),
       "boot_coefs" = coefs %>%
         group_by(bootstrap) %>%
         nest() %>%
         rename(variables = data),
       "perm_thresh" = perm_thresh,
-      "perm_coefs" = perm_coefs
+      "perm_coefs" = perm_coefs,
+      "variable_names" = data %>%
+        select(-outcome) %>%
+        colnames()
     )
   })
 }

@@ -6,7 +6,7 @@
 #'
 #' @param data A dataframe containing an outcome variable to be permuted.
 #' @param outcome The outcome as a string (i.e. "y").
-#' @param level_2_id The variable name determining level 2 status as a string (i.e., "level_2_column_name").
+#' @param intercept_level_ids A vector names defining which variables are random effect, i.e., c("level_2_column_name", "level_3_column_name").
 #' @param n_top_filter The number of variables to filter for final model (Default = 50).
 #' @param boot_reps The number of bootstrap samples. Default is "auto" which selects number based on dataframe size.
 #' @param permutations The number of times to be permuted per repeat. Default is "auto" which selects number based on dataframe size.
@@ -31,9 +31,12 @@
 
 utils::globalVariables(c("models", "in_model", "mean_coefficient", "ci_lower", "ci_upper", "stable"))
 
-stabilise_re <- function(data, outcome, level_2_id, n_top_filter = 50,
+stabilise_re <- function(data, outcome, intercept_level_ids, n_top_filter = 50,
                          boot_reps = "auto", permutations = "auto", perm_boot_reps = 20,
                          normalise = TRUE, dummy = TRUE, impute = TRUE) {
+
+  data <- as_tibble(data)
+
   boot_reps <- rep_selector_boot(data = data, boot_reps = boot_reps)
   permutations <- rep_selector_perm(data = data, permutations = permutations)
 
@@ -41,10 +44,10 @@ stabilise_re <- function(data, outcome, level_2_id, n_top_filter = 50,
 
   # Prep non level_2 data
   level_data <- data %>%
-    select(all_of(level_2_id))
+    select(all_of(intercept_level_ids))
 
   data_for_prep <- data %>%
-    select(-level_2_id)
+    select(-all_of(intercept_level_ids))
 
   data_prepped <- prep_data(data = data_for_prep, outcome = outcome, normalise = normalise, dummy = dummy, impute = impute)
 
@@ -55,12 +58,17 @@ stabilise_re <- function(data, outcome, level_2_id, n_top_filter = 50,
 
   # Filter
   x_names <- data %>%
-    select(-outcome, -level_2_id)
+    select(-outcome, -all_of(intercept_level_ids))
 
   df_re_model <- as.data.frame(colnames(x_names))
   colnames(df_re_model)[1] <- "variable"
 
-  rand_names <- paste0("+ (1|", level_2_id, ")")
+  rand_names <- paste0("")
+
+  for (level_name in intercept_level_ids) {
+    rand_names <- paste0(rand_names, "+ (1|", level_name, ")")
+  }
+
   df <- data
 
   df_cor1_func <- as.data.frame(matrix(0, ncol = 2, nrow = 1))
@@ -84,15 +92,14 @@ stabilise_re <- function(data, outcome, level_2_id, n_top_filter = 50,
   df_cor1_func$ID <- colnames(x_names)
   df_cor1_func$p <- as.numeric(df_cor1_func$p)
   vars_select_order <- df_cor1_func[order(df_cor1_func$p), ]
-
   vars_select <- vars_select_order[1:n_top_filter, ]
 
   v_sel <- vars_select$ID
-
+  v_sel<-v_sel[!is.na(v_sel)]
   x_selected <- x_names[, v_sel]
 
   data_selected <- df %>%
-    select(outcome, level_2_id) %>%
+    select(outcome, intercept_level_ids) %>%
     bind_cols(., x_selected)
 
   message("Done")
@@ -102,25 +109,39 @@ stabilise_re <- function(data, outcome, level_2_id, n_top_filter = 50,
   for (i in 1:boot_reps) {
     RE_boot <- data_selected[sample(1:nrow(data_selected), nrow(data_selected), replace = TRUE), ]
 
+    x_names_filtered <- RE_boot %>%
+      select(
+        -all_of(outcome),
+        -all_of(intercept_level_ids)
+      )
 
-    mod_code <- paste(colnames(RE_boot[, 3:ncol(RE_boot)]), sep = "", collapse = "+")
+    mod_code <- paste(colnames(x_names_filtered), sep = "", collapse = " + ")
     mod_sim_RE_boot <- suppressMessages(lmer(paste0(outcome, " ~ ", mod_code, rand_names), data = RE_boot))
     mod_sim_RE_out <- summary(mod_sim_RE_boot)
 
     COEFS <- as.data.frame(mod_sim_RE_out$coefficients)
     COEFS$variable <- rownames(COEFS)
-    selected_no_intercept <- COEFS %>% filter(variable != "(Intercept)")
+    selected_no_intercept <- COEFS %>%
+      filter(variable != "(Intercept)")
 
     selected <- selected_no_intercept %>% filter(selected_no_intercept$`t value` > 2 | selected_no_intercept$`t value` < -2)
-
     boot_final_mod_data <- RE_boot[, selected$variable]
     boot_final_mod_data_2 <- RE_boot %>%
-      select(outcome, level_2_id) %>%
+      select(outcome, intercept_level_ids) %>%
       bind_cols(boot_final_mod_data)
 
-    final_mod_code <- paste(colnames(boot_final_mod_data_2[, 3:ncol(boot_final_mod_data_2)]), sep = "", collapse = "+")
 
-    final_boot_mod <- suppressMessages(lmer(paste0(outcome, " ~ ", final_mod_code, rand_names), data = boot_final_mod_data_2))
+    if(ncol(boot_final_mod_data_2) > 2){
+      final_mod_code <- paste(colnames(boot_final_mod_data_2[, 3:ncol(boot_final_mod_data_2)]), sep = "", collapse = "+")
+
+      final_boot_mod <- suppressMessages(lmer(paste0(outcome, " ~ ", final_mod_code, rand_names), data = boot_final_mod_data_2))
+    }
+
+    if(ncol(boot_final_mod_data_2) <= 2){  # TODO: Can't rely on implied column numbers here.
+      rand_names_re_only <- substring(rand_names, 2)
+
+      final_boot_mod <- suppressMessages(lmer(paste0(outcome, " ~ ", rand_names_re_only), data = boot_final_mod_data_2))
+    }
 
     final_boot_mod_out <- summary(final_boot_mod)
 
@@ -230,11 +251,12 @@ stabilise_re <- function(data, outcome, level_2_id, n_top_filter = 50,
     vars_select <- vars_select_order[1:n_top_filter, ]
 
     v_sel <- vars_select$ID
+    v_sel<-v_sel[!is.na(v_sel)]
 
     x_selected <- x_names[, v_sel]
 
     data_selected <- data_to_use %>%
-      select(outcome, level_2_id) %>%
+      select(outcome, intercept_level_ids) %>%
       bind_cols(x_selected)
 
     for (k in 1:perm_boot_reps) {
@@ -309,7 +331,7 @@ stabilise_re <- function(data, outcome, level_2_id, n_top_filter = 50,
     max_stab_df <- rbind(max_stab_df, max_stab)
   }
 
-  perm_thresh <- mean(max_stab_df) - 0.01
+  perm_thresh <- mean(max_stab_df)
   table_stabil_means$in_model <- ifelse(table_stabil_means$stability > perm_thresh, 1, 0)
   coefs_in_model <- as.data.frame(full_join(table_stabil_means, coef_means, by = "variable"))
   in_model_selected <- table_stabil_means %>% filter(in_model == 1)
@@ -317,7 +339,7 @@ stabilise_re <- function(data, outcome, level_2_id, n_top_filter = 50,
   selected_to__model <- df %>% select(selected_variables)
 
   selected_to__model2 <- df %>%
-    select(all_of(outcome), level_2_id) %>%
+    select(all_of(outcome), intercept_level_ids) %>%
     bind_cols(selected_to__model)
 
   mod_code_sel <- paste(colnames(selected_to__model), sep = "", collapse = "+")
@@ -335,7 +357,11 @@ stabilise_re <- function(data, outcome, level_2_id, n_top_filter = 50,
     select(-in_model) %>%
     select(variable, mean_coefficient, ci_lower, ci_upper, stability, stable)
 
-  list_out <- list("lmer" = list("stability" = stability, "perm_thresh" = perm_thresh))
+  variable_names <- data %>%
+    select(-outcome) %>%
+    colnames()
+
+  list_out <- list("lmer" = list("stability" = stability, "perm_thresh" = perm_thresh, "variable_names" = variable_names))
   message("Done")
   return(list_out)
 }
