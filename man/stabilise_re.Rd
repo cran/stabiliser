@@ -8,7 +8,7 @@
 
 \item{outcome}{The outcome as a string (i.e. "y").}
 
-\item{level_2_id}{The variable name determining level 2 status as a string (i.e., "level_2_column_name").}
+\item{intercept_level_ids}{A vector names defining which variables are random effect, i.e., c("level_2_column_name", "level_3_column_name").}
 
 \item{n_top_filter}{The number of variables to filter for final model (Default = 50).}
 
